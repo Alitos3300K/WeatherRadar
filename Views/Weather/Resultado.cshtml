@@ -1,0 +1,86 @@
+@model WeatherRadar.Models.ClimaViewModel
+@{
+    ViewData["Title"] = "Clima de " + Model.Ciudad;
+}
+
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-8">
+
+        <!-- Tarjeta principal del clima -->
+        <div class="card-dark p-4 mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h2 class="fw-bold mb-0" style="font-family:'Orbitron',sans-serif; color:#00d4ff;">
+                        @Model.Ciudad
+                    </h2>
+                    <p style="color:#4a9bbe;" class="mb-2">@Model.Pais</p>
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://openweathermap.org/img/wn/@(Model.Icono)@@2x.png" alt="clima" />
+                        <div>
+                            <div style="font-size:3rem; font-weight:700; color:#00d4ff;">@Model.Temperatura.ToString("0")°C</div>
+                            <div style="color:#4a9bbe; text-transform:capitalize;">@Model.Descripcion</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row g-2 mt-3 mt-md-0">
+                        <div class="col-6">
+                            <div style="background:rgba(0,212,255,0.08); border-radius:10px; padding:12px;">
+                                <div style="color:#4a9bbe; font-size:.8rem;">Sensación térmica</div>
+                                <div style="color:#00d4ff; font-weight:600;">@Model.SensacionTermica.ToString("0")°C</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:rgba(0,212,255,0.08); border-radius:10px; padding:12px;">
+                                <div style="color:#4a9bbe; font-size:.8rem;">Humedad</div>
+                                <div style="color:#00d4ff; font-weight:600;">@Model.Humedad%</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:rgba(0,212,255,0.08); border-radius:10px; padding:12px;">
+                                <div style="color:#4a9bbe; font-size:.8rem;">Viento</div>
+                                <div style="color:#00d4ff; font-weight:600;">@Model.VelocidadViento m/s</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div style="background:rgba(0,212,255,0.08); border-radius:10px; padding:12px;">
+                                <div style="color:#4a9bbe; font-size:.8rem;">Mín / Máx</div>
+                                <div style="color:#00d4ff; font-weight:600;">@Model.TempMin.ToString("0")° / @Model.TempMax.ToString("0")°</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón guardar favorita -->
+            <form method="post" asp-action="GuardarFavorita" class="mt-3">
+                <input type="hidden" name="ciudad" value="@Model.Ciudad" />
+                <input type="hidden" name="pais" value="@Model.Pais" />
+                <button type="submit" class="btn-accent">⭐ Guardar como favorita</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ms-2">🔍 Nueva búsqueda</a>
+            </form>
+        </div>
+
+        <!-- Pronóstico 5 días -->
+        @if (Model.Pronostico.Any())
+        {
+            <div class="card-dark p-4">
+                <h5 class="mb-3" style="color:#00d4ff;">📅 Pronóstico 5 días</h5>
+                <div class="row g-2">
+                    @foreach (var dia in Model.Pronostico)
+                    {
+                        <div class="col">
+                            <div style="background:rgba(0,212,255,0.06); border-radius:10px; padding:12px; text-align:center;">
+                                <div style="color:#4a9bbe; font-size:.8rem;">@dia.Fecha.ToString("ddd dd/MM")</div>
+                                <img src="https://openweathermap.org/img/wn/@(dia.Icono).png" alt="clima" />
+                                <div style="color:#00d4ff; font-weight:600;">@dia.Temperatura.ToString("0")°C</div>
+                                <div style="color:#4a9bbe; font-size:.75rem; text-transform:capitalize;">@dia.Descripcion</div>
+                                <div style="color:#4a9bbe; font-size:.75rem;">💧 @dia.Humedad%</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
